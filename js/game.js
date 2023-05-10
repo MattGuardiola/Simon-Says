@@ -2,9 +2,20 @@ let buttonColors = ["red", "blue", "green", "yellow"]
 let gamePattern = []
 let userClickPattern = []
 let level = 0
+let started = false
+
+
+
+document.addEventListener("keydown", function () {
+    if (!started) {
+        nextSequence()
+        started = true
+    }
+})
 
 
 function nextSequence() {
+    userClickPattern = []
     let randomNumber = Math.floor(Math.random() * 4)
     let randomChosenColor = buttonColors[randomNumber]
     gamePattern.push(randomChosenColor)
@@ -27,11 +38,33 @@ function saveUserChoice () {
     checkAnswer(userClickPattern.length - 1)
 }
 
-
 document.querySelector("#green").addEventListener("click", saveUserChoice)
 document.querySelector("#red").addEventListener("click", saveUserChoice)
 document.querySelector("#yellow").addEventListener("click", saveUserChoice)
 document.querySelector("#blue").addEventListener("click", saveUserChoice)
+
+
+function checkAnswer (currentlevel) {
+    if (userClickPattern[currentlevel] === gamePattern[currentlevel]){
+
+        if(userClickPattern.length === gamePattern.length) {
+           setTimeout(() => {
+               nextSequence()
+           }, 1000)
+       }
+    } else {
+        document.querySelector("body").classList.add("game-over")
+        document.querySelector("h1").innerHTML = "GAME OVER"
+
+        setTimeout(() => {
+            document.querySelector("body").classList.remove("game-over")
+            document.querySelector("h1").innerHTML = "Press Any Key to Restart"
+        }, 1000)
+        startOver()
+    }
+}
+
+
 
 
 function animatePress (currentColor){
@@ -42,23 +75,9 @@ function animatePress (currentColor){
     }, 100)
 }
 
-document.addEventListener("keydown", nextSequence)
-
-
-function checkAnswer (currentlevel) {
-    if (userClickPattern[currentlevel] === gamePattern[currentlevel]){
-        console.log(userClickPattern)
-        console.log(gamePattern)
-        if(userClickPattern === gamePattern) {
-           setTimeout(() => {
-               nextSequence()
-           }, 1000)
-
-       }
-
-
-    } else {
-        console.log("fail")
-    }
+function startOver() {
+    level = 0;
+    gamePattern = []
+    started = false
 }
 
